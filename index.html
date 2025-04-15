@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор КБЖУ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+        .result span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Калькулятор КБЖУ
+                Sport_Zona</h2>
+        <label for="height">Рост (см):</label>
+        <input type="number" id="height" placeholder="Введите рост">
+
+        <label for="weight">Вес (кг):</label>
+        <input type="number" id="weight" placeholder="Введите вес">
+
+        <label for="age">Возраст:</label>
+        <input type="number" id="age" placeholder="Введите возраст">
+
+        <label for="gender">Пол:</label>
+        <select id="gender">
+            <option value="male">Мужчина</option>
+            <option value="female">Женщина</option>
+        </select>
+
+        <label for="activity">Уровень активности:</label>
+        <select id="activity">
+            <option value="1.2">Минимальная активность</option>
+            <option value="1.375">Низкая активность</option>
+            <option value="1.55">Средняя активность</option>
+            <option value="1.725">Высокая активность</option>
+            <option value="1.9">Очень высокая активность</option>
+        </select>
+
+        <button onclick="calculateCBJU()">Рассчитать</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function calculateCBJU() {
+            const height = parseFloat(document.getElementById('height').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const age = parseFloat(document.getElementById('age').value);
+            const gender = document.getElementById('gender').value;
+            const activity = parseFloat(document.getElementById('activity').value);
+
+            if (!height || !weight || !age || !activity) {
+                document.getElementById('result').innerHTML = '<span style="color: red;">Заполните все поля!</span>';
+                return;
+            }
+
+            let bmr;
+            if (gender === 'male') {
+                bmr = 88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age);
+            } else {
+                bmr = 447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age);
+            }
+
+            const totalCalories = Math.round(bmr * activity);
+            const proteins = Math.round((totalCalories * 0.3) / 4); // 30% белки
+            const fats = Math.round((totalCalories * 0.3) / 9);     // 30% жиры
+            const carbs = Math.round((totalCalories * 0.4) / 4);   // 40% углеводы
+
+            document.getElementById('result').innerHTML = `
+                <p>Ваша суточная потребность в калориях: <span>${totalCalories} ккал</span></p>
+                <p>Белки: <span>${proteins} г</span></p>
+                <p>Жиры: <span>${fats} г</span></p>
+                <p>Углеводы: <span>${carbs} г</span></p>
+            `;
+        }
+    </script>
+</body>
+</html>
