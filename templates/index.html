@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор КБЖУ</title>
+    <title>Калькулятор КБЖУ Sport_Zona</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,10 +17,16 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
+            width: 450px;
         }
         h2 {
             text-align: center;
+            margin-bottom: 10px; /* Уменьшен отступ, чтобы Sport_Zona было ближе к заголовку */
+        }
+        .sport-zona-title {
+            text-align: center;
+            font-size: 0.9em; /* Меньший размер шрифта для Sport_Zona */
+            color: #555; /* Более темный цвет для Sport_Zona */
             margin-bottom: 20px;
         }
         label {
@@ -29,14 +34,7 @@
             margin-bottom: 5px;
             font-weight: bold;
         }
-        input[type="number"] {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        select {
+        input[type="number"], select {
             width: 100%;
             padding: 8px;
             margin-bottom: 15px;
@@ -44,8 +42,7 @@
             border-radius: 5px;
         }
         button {
-            width: 100%;
-            padding: 10px;
+            padding: 10px 15px;
             background-color: #4caf50;
             color: white;
             border: none;
@@ -56,7 +53,7 @@
         button:hover {
             background-color: #45a049;
         }
-        .result {
+        .result, .progress {
             margin-top: 20px;
             text-align: center;
             font-size: 18px;
@@ -64,73 +61,264 @@
         .result span {
             font-weight: bold;
         }
+        .products {
+            margin-top: 20px;
+        }
+        .products h3 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .product-selection {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .product-selection label {
+            width: 60px;
+        }
+        .product-selection select {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .product-selection button {
+            padding: 5px 10px;
+            background-color: #007bff;
+        }
+        .product-selection button:hover {
+            background-color: #0056b3;
+        }
+        .product-selection span {
+            margin-left: 10px;
+        }
+        #diet-mode-select {
+            margin-top: 10px;
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .progress-bar {
+            font-family: monospace;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Калькулятор КБЖУ
-                Sport_Zona</h2>
-        <label for="height">Рост (см):</label>
-        <input type="number" id="height" placeholder="Введите рост">
+<div class="container">
+    <h2>Калькулятор КБЖУ</h2>
+    <div class="sport-zona-title">Sport_Zona</div>
 
-        <label for="weight">Вес (кг):</label>
-        <input type="number" id="weight" placeholder="Введите вес">
+    <label for="height">Рост (см):</label>
+    <input type="number" id="height">
 
-        <label for="age">Возраст:</label>
-        <input type="number" id="age" placeholder="Введите возраст">
+    <label for="weight">Вес (кг):</label>
+    <input type="number" id="weight">
 
-        <label for="gender">Пол:</label>
-        <select id="gender">
-            <option value="male">Мужчина</option>
-            <option value="female">Женщина</option>
-        </select>
+    <label for="age">Возраст:</label>
+    <input type="number" id="age">
 
-        <label for="activity">Уровень активности:</label>
-        <select id="activity">
-            <option value="1.2">Минимальная активность</option>
-            <option value="1.375">Низкая активность</option>
-            <option value="1.55">Средняя активность</option>
-            <option value="1.725">Высокая активность</option>
-            <option value="1.9">Очень высокая активность</option>
-        </select>
+    <label for="gender">Пол:</label>
+    <select id="gender">
+        <option value="male">Мужчина</option>
+        <option value="female">Женщина</option>
+    </select>
 
-        <button onclick="calculateCBJU()">Рассчитать</button>
+    <label for="activity">Уровень активности:</label>
+    <select id="activity">
+        <option value="1.2">Минимальная активность</option>
+        <option value="1.375">Низкая активность</option>
+        <option value="1.55">Средняя активность</option>
+        <option value="1.725">Высокая активность</option>
+        <option value="1.9">Очень высокая активность</option>
+    </select>
 
-        <div class="result" id="result"></div>
+    <label for="diet-mode-select">Режим питания:</label>
+    <select id="diet-mode-select">
+        <option value="mass-gain">Набор массы</option>
+        <option value="weight-loss">Похудение</option>
+        <option value="maintenance">Поддержание</option>
+    </select>
+
+    <button onclick="calculateCBJU()">Рассчитать</button>
+
+    <div class="result" id="result"></div>
+    <div class="progress" id="progress"></div>
+
+    <div class="products" id="products" style="display: none;">
+        <h3>Выбор продуктов</h3>
+
+        <div class="product-selection">
+            <label>Белки:</label>
+            <select id="protein-select">
+                <option value="6" data-weight="60">Яйцо (6 г белка / 1 шт.)</option>
+                <option value="25" data-weight="100">Куриная грудка (25 г белка / 100 г)</option>
+                <option value="18" data-weight="100">Творог 5% (18 г белка / 100 г)</option>
+                <option value="9" data-weight="100">Фасоль (9 г белка / 100 г)</option>
+                <option value="20" data-weight="100">Лосось (20 г белка / 100 г)</option>
+            </select>
+            <span id="protein-result">0 порц.</span>
+        </div>
+
+        <div class="product-selection">
+            <label>Жиры:</label>
+            <select id="fat-select">
+                <option value="15" data-weight="100">Авокадо (15 г жиров / 100 г)</option>
+                <option value="14" data-weight="13">Оливковое масло (14 г жиров / 1 ст. ложка)</option>
+                <option value="18" data-weight="30">Грецкие орехи (18 г жиров / 30 г)</option>
+                <option value="9" data-weight="30">Сыр чеддер (9 г жиров / 30 г)</option>
+                <option value="16" data-weight="30">Арахисовая паста (16 г жиров / 30 г)</option>
+            </select>
+            <span id="fat-result">0 порц.</span>
+        </div>
+
+        <div class="product-selection">
+            <label>Угл.:</label>
+            <select id="carb-select">
+                <option value="66" data-weight="100">Овсянка (66 г углеводов / 100 г)</option>
+                <option value="27" data-weight="120">Банан (27 г углеводов / 1 шт.)</option>
+                <option value="17" data-weight="100">Картофель (17 г углеводов / 100 г)</option>
+                <option value="26" data-weight="100">Коричневый рис (26 г углеводов / 100 г)</option>
+                <option value="12" data-weight="35">Хлеб цельнозерн. (12 г углеводов / 1 ломтик)</option>
+            </select>
+            <span id="carb-result">0 порц.</span>
+        </div>
     </div>
+</div>
 
-    <script>
-        function calculateCBJU() {
-            const height = parseFloat(document.getElementById('height').value);
-            const weight = parseFloat(document.getElementById('weight').value);
-            const age = parseFloat(document.getElementById('age').value);
-            const gender = document.getElementById('gender').value;
-            const activity = parseFloat(document.getElementById('activity').value);
+<script>
+    window.totalCalories = 0;
+    window.proteins = 0;
+    window.fats = 0;
+    window.carbs = 0;
 
-            if (!height || !weight || !age || !activity) {
-                document.getElementById('result').innerHTML = '<span style="color: red;">Заполните все поля!</span>';
-                return;
-            }
+    const proteinSelect = document.getElementById('protein-select');
+    const fatSelect = document.getElementById('fat-select');
+    const carbSelect = document.getElementById('carb-select');
 
-            let bmr;
-            if (gender === 'male') {
-                bmr = 88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age);
-            } else {
-                bmr = 447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age);
-            }
+    const dietModeMultipliers = {
+        'mass-gain': { calories: 1.15, protein: 0.35, fat: 0.25, carbs: 0.40 },
+        'weight-loss': { calories: 0.85, protein: 0.40, fat: 0.20, carbs: 0.40 },
+        'maintenance': { calories: 1, protein: 0.30, fat: 0.30, carbs: 0.40 }
+    };
 
-            const totalCalories = Math.round(bmr * activity);
-            const proteins = Math.round((totalCalories * 0.3) / 4); // 30% белки
-            const fats = Math.round((totalCalories * 0.3) / 9);     // 30% жиры
-            const carbs = Math.round((totalCalories * 0.4) / 4);   // 40% углеводы
+    window.onload = function() {
+        const storedHeight = localStorage.getItem('userHeight');
+        const storedWeight = localStorage.getItem('userWeight');
+        const storedAge = localStorage.getItem('userAge');
+        const storedGender = localStorage.getItem('userGender');
+        const storedActivity = localStorage.getItem('userActivity');
+        const storedDietMode = localStorage.getItem('userDietMode');
 
-            document.getElementById('result').innerHTML = `
-                <p>Ваша суточная потребность в калориях: <span>${totalCalories} ккал</span></p>
-                <p>Белки: <span>${proteins} г</span></p>
-                <p>Жиры: <span>${fats} г</span></p>
-                <p>Углеводы: <span>${carbs} г</span></p>
-            `;
+        if (storedHeight) document.getElementById('height').value = storedHeight;
+        if (storedWeight) document.getElementById('weight').value = storedWeight;
+        if (storedAge) document.getElementById('age').value = storedAge;
+        if (storedGender) document.getElementById('gender').value = storedGender;
+        if (storedActivity) document.getElementById('activity').value = storedActivity;
+        if (storedDietMode) document.getElementById('diet-mode-select').value = storedDietMode;
+
+        // Add event listeners to update results on select change
+        proteinSelect.addEventListener('change', () => {
+            calculatePortions('protein');
+        });
+        fatSelect.addEventListener('change', () => {
+            calculatePortions('fat');
+        });
+        carbSelect.addEventListener('change', () => {
+            calculatePortions('carb');
+        });
+
+        // Initial calculation on load
+        if (storedHeight && storedWeight && storedAge && storedActivity) {
+            calculateCBJU();
         }
-    </script>
+    };
+
+    function calculateCBJU() {
+        const height = parseFloat(document.getElementById('height').value);
+        const weight = parseFloat(document.getElementById('weight').value);
+        const age = parseFloat(document.getElementById('age').value);
+        const gender = document.getElementById('gender').value;
+        const activity = parseFloat(document.getElementById('activity').value);
+        const dietMode = document.getElementById('diet-mode-select').value;
+
+        localStorage.setItem('userHeight', height);
+        localStorage.setItem('userWeight', weight);
+        localStorage.setItem('userAge', age);
+        localStorage.setItem('userGender', gender);
+        localStorage.setItem('userActivity', activity);
+        localStorage.setItem('userDietMode', dietMode);
+
+        if (!height || !weight || !age || !activity) {
+            document.getElementById('result').innerHTML = '<span style="color: red;">Заполните все поля!</span>';
+            return;
+        }
+
+        let bmr = gender === 'male'
+            ? 88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age)
+            : 447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age);
+
+        const multipliers = dietModeMultipliers[dietMode];
+        window.totalCalories = Math.round(bmr * activity * multipliers.calories);
+        window.proteins = (window.totalCalories * multipliers.protein) / 4;
+        window.fats = (window.totalCalories * multipliers.fat) / 9;
+        window.carbs = (window.totalCalories * multipliers.carbs) / 4;
+
+        document.getElementById('result').innerHTML = `
+            <p>Калории: <span>${window.totalCalories} ккал</span></p>
+            <p>Белки: <span>${window.proteins.toFixed(1)} г</span></p>
+            <p>Жиры: <span>${window.fats.toFixed(1)} г</span></p>
+            <p>Углеводы: <span>${window.carbs.toFixed(1)} г</span></p>
+        `;
+
+        document.getElementById('products').style.display = 'block';
+        updateProgressBars();
+        calculatePortions('protein');
+        calculatePortions('fat');
+        calculatePortions('carb');
+    }
+
+    function calculatePortions(type) {
+        const select = document.getElementById(`${type}-select`);
+        const result = document.getElementById(`${type}-result`);
+        const option = select.options[select.selectedIndex];
+
+        const macroPerPortion = parseFloat(option.value);
+        const weightPerPortion = parseFloat(option.getAttribute('data-weight')) || 100;
+        const required = parseFloat(window[`${type}s`]);
+
+        if (!required || !macroPerPortion || isNaN(required) || isNaN(macroPerPortion)) {
+            result.innerText = 'Ошибка';
+            return;
+        }
+
+        const portions = required / macroPerPortion;
+        const totalWeight = Math.round(portions * weightPerPortion);
+
+        result.innerText = `${portions.toFixed(2)} порц. ≈ ${totalWeight} г`;
+        updateProgressBars();
+    }
+
+    function updateProgressBars() {
+        const getProgress = (macroPerPortion, totalRequired) => {
+            const percent = Math.min(100, (macroPerPortion / totalRequired) * 100);
+            const bars = Math.round(percent / 10);
+            return '▓'.repeat(bars) + '░'.repeat(10 - bars) + ` ${Math.round(percent)}%`;
+        };
+
+        const proteinVal = parseFloat(document.getElementById('protein-select').value);
+        const fatVal = parseFloat(document.getElementById('fat-select').value);
+        const carbVal = parseFloat(document.getElementById('carb-select').value);
+
+        const proteinProg = getProgress(proteinVal, window.proteins);
+        const fatProg = getProgress(fatVal, window.fats);
+        const carbProg = getProgress(carbVal, window.carbs);
+
+        document.getElementById('progress').innerHTML = `
+            <div class="progress-bar">Белки: ${proteinProg}</div>
+            <div class="progress-bar">Жиры: ${fatProg}</div>
+            <div class="progress-bar">Углеводы: ${carbProg}</div>
+        `;
+    }
+</script>
 </body>
 </html>
